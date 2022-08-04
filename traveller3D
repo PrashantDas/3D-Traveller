@@ -1,0 +1,44 @@
+memo = dict()
+def paths_2d(m, n):
+    """calculates the number of paths moving from top left to
+        bottom right in an m X n grid, traveling only right or down"""
+    if m == 0 or n == 0:
+        return 0
+    if m == 1 or n == 1:
+        return 1
+    if m == 2:
+        return n
+    if n == 2:
+        return m
+    if n > m:  # since ways for (m, n) grid is same as (n, m) grid, we keep it in the form (smaller, larger)
+        m, n = n, m
+    if (m, n) in memo:
+        return memo[(m ,n)]
+    ans = paths_2d(m -1, n) + paths_2d(m, n - 1)
+    memo[(m, n)] = ans
+    return ans
+
+
+memo_3d = {}
+def paths_3d(x, y, z):
+    """calculates the number of ways of traversing a 3D lattice from one corner to the opposite corner"""
+    if x == 0 or y == 0 or z == 0:
+        return 0
+    if x == 1:  # when any of the dimension becomes 1, we reach a base case which is a 2D matrix
+        return paths_2d(y, z)
+    if y == 1:
+        return paths_2d(x, z)
+    if z == 1:
+        return paths_2d(x, y)
+    if (x, y, z) in memo_3d:
+        return memo_3d[(x, y, z)]
+    a = paths_3d(x-1, y, z)
+    b = paths_3d(x, y-1, z)
+    c = paths_3d(x, y, z-1)
+    value = a + b + c
+    memo_3d[(x, y, z)] = value
+    return value
+
+
+print(paths_3d(3, 3, 3))  # 90 ways
+print(paths_3d(10, 10, 10))  # 227,873,431,500 ways
